@@ -460,7 +460,7 @@ function CardFace({card,onClick,hi,dim}){
   const fc=isFace?FCLR[card.val]:null;
   const sc=isRed?"#c0392b":"#1a1a2e";
   return(
-    <div onClick={onClick} style={{width:56,height:78,borderRadius:3,flexShrink:0,cursor:onClick?"pointer":"default",border:hi?"3px solid "+GOLD:"2px solid "+(isRed?"#8B3030":"#444"),boxShadow:hi?"0 0 0 2px "+GOLD+"88,4px 4px 0 #000":"3px 3px 0 #000",background:isFace?fc.bg:"#f5eed8",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"space-between",opacity:dim?0.3:1,padding:"3px 2px",userSelect:"none",imageRendering:"pixelated",overflow:"hidden"}}>
+    <div onClick={onClick} style={{width:40,height:58,borderRadius:3,flexShrink:0,cursor:onClick?"pointer":"default",border:hi?"3px solid "+GOLD:"2px solid "+(isRed?"#8B3030":"#444"),boxShadow:hi?"0 0 0 2px "+GOLD+"88,4px 4px 0 #000":"3px 3px 0 #000",background:isFace?fc.bg:"#f5eed8",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"space-between",opacity:dim?0.3:1,padding:"3px 2px",userSelect:"none",imageRendering:"pixelated",overflow:"hidden"}}>
       {isFace?(
         <>
           <div style={{fontSize:12,color:fc.ac,fontFamily:PX,lineHeight:1,alignSelf:"flex-start",paddingLeft:2}}>{card.val}</div>
@@ -486,7 +486,7 @@ function CardFace({card,onClick,hi,dim}){
 
 function CardBack({hasSecret}){
   return(
-    <div style={{width:56,height:78,borderRadius:3,flexShrink:0,border:hasSecret?"2px solid #c9a84c":"2px solid #8B0000",boxShadow:hasSecret?"0 0 6px #c9a84c55,3px 3px 0 #000":"3px 3px 0 #000",background:"#1a0505",imageRendering:"pixelated",overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center"}}>
+    <div style={{width:40,height:58,borderRadius:3,flexShrink:0,border:hasSecret?"2px solid #c9a84c":"2px solid #8B0000",boxShadow:hasSecret?"0 0 6px #c9a84c55,3px 3px 0 #000":"3px 3px 0 #000",background:"#1a0505",imageRendering:"pixelated",overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center"}}>
       <svg width="40" height="58" viewBox="0 0 40 58">
         {Array.from({length:5}).map((_,row)=>Array.from({length:4}).map((_,col)=>(
           <rect key={row+","+col} x={col*10+1} y={row*11+2} width={8} height={9} fill={(row+col)%2===0?"#5a0000":"#3d0000"}/>
@@ -500,7 +500,7 @@ function CardBack({hasSecret}){
 function WildBack({wild}){
   const rc=RCLR[wild.rarity];
   return(
-    <div style={{width:56,height:78,borderRadius:3,flexShrink:0,border:"2px solid "+rc,boxShadow:"0 0 8px "+rc+",3px 3px 0 #000",background:"#080010",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:3}}>
+    <div style={{width:40,height:58,borderRadius:3,flexShrink:0,border:"2px solid "+rc,boxShadow:"0 0 8px "+rc+",3px 3px 0 #000",background:"#080010",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:3}}>
       <div style={{fontSize:8,color:rc,fontFamily:PX}}>WILD</div>
       <div style={{fontSize:18,color:rc,fontFamily:PX}}>W</div>
       <div style={{fontSize:7,color:rc+"aa",fontFamily:PX}}>{wild.rarity.slice(0,4)}</div>
@@ -1391,11 +1391,11 @@ export default function App(){
         </div>
 
         {/* Tableau */}
-        <div style={{marginBottom:8}}>
+        <div style={{marginBottom:8,width:"100%",overflowX:"auto",paddingBottom:4}}>
           {tab.map((row,ri)=>(
-            <div key={ri} style={{display:"flex",justifyContent:"center",gap:4,marginBottom:4}}>
+            <div key={ri} style={{display:"flex",justifyContent:"center",gap:2,marginBottom:2}}>
               {row.map((card,ci)=>{
-                if(!card||card.removed)return<div key={ci} style={{width:46,height:64,flexShrink:0}}/>;
+                if(!card||card.removed)return<div key={ci} style={{width:40,height:58,flexShrink:0}}/>;
                 const inTruckGroup=vRules.groupPlay&&truckGroup.find(g=>g.ri===ri&&g.ci===ci);
                 const canPlay=card.available&&(vRules.groupPlay||isAdj(card,top,cardRange)||freeOp>0||freeOp5>0||(ghostLap&&["J","Q","K","A"].indexOf(card.val)>=0));
                 if(!card.faceUp)return<CardBack key={ci} hasSecret={!!card.collectible}/>;
@@ -1410,7 +1410,7 @@ export default function App(){
           <div style={{textAlign:"center"}}>
             <div style={{fontSize:10,color:"#444",marginBottom:4,letterSpacing:1}}>{"STOCK("+stock.length+")"}</div>
             <div onClick={drawStock} style={{cursor:"pointer"}}>
-              {stock.length>0?(stock[0]&&stock[0].isWild?<WildBack wild={stock[0].wildData}/>:<CardBack/>):<div style={{width:46,height:64,border:"2px dashed #2a2a2a",borderRadius:3}}/>}
+              {stock.length>0?(stock[0]&&stock[0].isWild?<WildBack wild={stock[0].wildData}/>:<CardBack/>):<div style={{width:40,height:58,border:"2px dashed #2a2a2a",borderRadius:3}}/>}
             </div>
           </div>
           <div style={{textAlign:"center"}}>
