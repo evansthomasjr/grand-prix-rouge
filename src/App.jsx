@@ -1455,7 +1455,7 @@ export default function App(){
             );
           })}
         </div>
-        <button onClick={()=>{setScreen("title_ready");}} style={{background:vehicle.color,color:DARK,border:"none",padding:"13px 36px",fontSize:14,fontFamily:PX,cursor:"pointer",letterSpacing:2,boxShadow:"4px 4px 0 #000"}}>
+        <button onClick={()=>{setScreen("title_ready");}} style={{background:RED,color:"#fff",border:"none",padding:"13px 36px",fontSize:14,fontFamily:PX,cursor:"pointer",letterSpacing:2,boxShadow:"4px 4px 0 #8B0000"}}>
           {"DRIVE THE "+vehicle.name}
         </button>
         <div style={{marginTop:10,fontSize:10,color:"#555",fontFamily:"Georgia,serif",fontStyle:"italic",maxWidth:300,textAlign:"center"}}>
