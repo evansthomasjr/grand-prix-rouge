@@ -763,7 +763,7 @@ export default function App(){
     const boonCombo=activeBoons.indexOf("cord_years")>=0?3:activeBoons.indexOf("sera_dontlook")>=0?2:0;
     const startCombo=Math.max(boonCombo,vRules.startCombo+(vehicle.id==="indy"?Math.min(indyRunCount,3):0));
     setCombo(startCombo);
-    setTruckGroup([]);setRaceParts([]);setHeldParts([null,null,null]);
+    setTruckGroup([]);setRaceParts([]);
     setOffer(null);setWildFlash(null);setLapBanner(null);setHaleWarning(null);
     setUsedBoons([]);
     const warmerOp=activeBoons.indexOf("emilio_warmers")>=0?4:0;
