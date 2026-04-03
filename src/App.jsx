@@ -1040,7 +1040,7 @@ export default function App(){
   }
 
   function drawStock(){
-    if(offer||wildFlash||lapBanner||stock.length===0)return;
+    if(wildFlash||lapBanner||stock.length===0)return;
     const card=stock[0];
     if(card.isWild){setStock(s=>s.slice(1));doResolveWild(card.wildData);return;}
     const free=freeDraws>0;
@@ -1049,7 +1049,7 @@ export default function App(){
     if(!noReset){
       setCombo(0);
       // Drawing costs you — rival gets a small boost unless you have chassis L3+
-      if(carUpgrades.chassis<2) setRivalPos(r=>r+2);
+      if(carUpgrades.chassis<2) setRivalLap(r=>r+2);
     }
     if(free)setFreeDraws(v=>v-1);
     if(comboLocked>0)setComboLocked(v=>v-1);
@@ -1301,7 +1301,7 @@ export default function App(){
 
         {/* Parts offer */}
         {offer&&(
-          <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.93)",zIndex:200,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:16,fontFamily:PX}}>
+          <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.96)",zIndex:9999,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:16,fontFamily:PX}}>
             <div style={{fontSize:7,color:"#555",marginBottom:6,letterSpacing:3}}>-- PIT RADIO --</div>
             <div style={{fontSize:11,color:GOLD,marginBottom:4,textShadow:"2px 2px 0 #8B6914"}}>PARTS OFFER</div>
             <div style={{fontSize:7,color:"#666",marginBottom:20}}>{offer.label}</div>
@@ -1382,6 +1382,7 @@ export default function App(){
           </div>
         )}
 
+        {offer&&<div style={{width:"100%",maxWidth:500,marginBottom:4,background:GOLD,padding:"6px",fontSize:7,color:DARK,textAlign:"center",fontFamily:PX,cursor:"pointer"}} onClick={()=>window.scrollTo(0,0)}>PARTS OFFER WAITING — TAP HERE</div>}
         <div style={{width:"100%",maxWidth:500,marginBottom:6,background:"#0d0d0d",border:"1px solid #1a1a1a",padding:"5px 10px",fontSize:6,color:"#ccc",textAlign:"center",minHeight:20,letterSpacing:1}}>
           {vRules.groupPlay&&truckGroup.length>0
             ? "GROUP: "+truckGroup.map(g=>g.card.val+g.card.suit).join(" - ")+" ("+truckGroup.length+"/3) — TAP 3RD TO CONFIRM"
