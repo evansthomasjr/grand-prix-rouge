@@ -446,7 +446,7 @@ const TPTS = [[15,50],[15,42],[15,34],[15,26],[15,20],[20,12],[28,8],[38,8],[48,
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function shuffle(a){const b=a.slice();for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=b[i];b[i]=b[j];b[j]=t;}return b;}
 function makeDeck(){const d=[];for(let s=0;s<SUITS.length;s++)for(let v=0;v<VALUES.length;v++)d.push({suit:SUITS[s],val:VALUES[v],isWild:false});return shuffle(d);}
-function isAdj(a,b,range){const va=VMAP[a.val],vb=VMAP[b.val],diff=Math.abs(va-vb);return diff<=range||(va===1&&vb===13)||(va===13&&vb===1);}
+function isAdj(a,b,range){const va=VMAP[a.val],vb=VMAP[b.val],diff=Math.abs(va-vb);return (diff>=1&&diff<=range)||(va===1&&vb===13)||(va===13&&vb===1);}
 function dealTab(deck){return[deck.slice(0,3),deck.slice(3,9),deck.slice(9,18)].map((row,ri)=>row.map(c=>({...c,faceUp:ri===2,removed:false})));}
 function recompute(tab){const gone=(r,c)=>!tab[r]||!tab[r][c]||tab[r][c].removed;return tab.map((row,ri)=>row.map((card,ci)=>{if(!card||card.removed)return{...card,available:false};const av=ri===2?true:ri===1?gone(2,ci*2)&&gone(2,ci*2+1):gone(1,ci*2)&&gone(1,ci*2+1);return{...card,available:av,faceUp:av||card.faceUp};}));}
 function catScale(inst,cat){const n=inst.filter(p=>p.cat===cat).length;return n===0?1:n===1?0.6:0.3;}
@@ -460,24 +460,24 @@ function CardFace({card,onClick,hi,dim}){
   const fc=isFace?FCLR[card.val]:null;
   const sc=isRed?"#c0392b":"#1a1a2e";
   return(
-    <div onClick={onClick} style={{width:46,height:64,borderRadius:3,flexShrink:0,cursor:onClick?"pointer":"default",border:hi?"3px solid "+GOLD:"2px solid "+(isRed?"#8B3030":"#444"),boxShadow:hi?"0 0 0 2px "+GOLD+"88,4px 4px 0 #000":"3px 3px 0 #000",background:isFace?fc.bg:"#f5eed8",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"space-between",opacity:dim?0.3:1,padding:"3px 2px",userSelect:"none",imageRendering:"pixelated",overflow:"hidden"}}>
+    <div onClick={onClick} style={{width:56,height:78,borderRadius:3,flexShrink:0,cursor:onClick?"pointer":"default",border:hi?"3px solid "+GOLD:"2px solid "+(isRed?"#8B3030":"#444"),boxShadow:hi?"0 0 0 2px "+GOLD+"88,4px 4px 0 #000":"3px 3px 0 #000",background:isFace?fc.bg:"#f5eed8",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"space-between",opacity:dim?0.3:1,padding:"3px 2px",userSelect:"none",imageRendering:"pixelated",overflow:"hidden"}}>
       {isFace?(
         <>
-          <div style={{fontSize:6,color:fc.ac,fontFamily:PX,lineHeight:1,alignSelf:"flex-start",paddingLeft:2}}>{card.val}</div>
-          <div style={{fontSize:7,color:fc.ac,fontFamily:PX,letterSpacing:1,textAlign:"center"}}>{fc.label}</div>
+          <div style={{fontSize:12,color:fc.ac,fontFamily:PX,lineHeight:1,alignSelf:"flex-start",paddingLeft:2}}>{card.val}</div>
+          <div style={{fontSize:11,color:fc.ac,fontFamily:PX,letterSpacing:1,textAlign:"center"}}>{fc.label}</div>
           <svg width="28" height="28" viewBox="0 0 16 16" style={{imageRendering:"pixelated"}}>
             {card.val==="A"&&<><rect x="6" y="1" width="4" height="4" fill={fc.ac}/><rect x="4" y="5" width="8" height="6" fill={fc.ac}/><rect x="5" y="11" width="2" height="3" fill={fc.ac}/><rect x="9" y="11" width="2" height="3" fill={fc.ac}/><rect x="3" y="8" width="2" height="3" fill={fc.ac}/><rect x="11" y="8" width="2" height="3" fill={fc.ac}/></>}
             {card.val==="K"&&<><rect x="6" y="1" width="4" height="4" fill={fc.ac}/><rect x="5" y="5" width="6" height="5" fill={fc.ac}/><rect x="4" y="10" width="8" height="4" fill={fc.ac}/><rect x="3" y="7" width="2" height="3" fill={fc.ac}/><rect x="11" y="7" width="2" height="3" fill={fc.ac}/><rect x="6" y="0" width="1" height="2" fill={GOLD}/><rect x="8" y="0" width="1" height="2" fill={GOLD}/><rect x="7" y="0" width="2" height="1" fill={GOLD}/></>}
             {card.val==="Q"&&<><rect x="6" y="2" width="4" height="4" fill={fc.ac}/><rect x="5" y="6" width="6" height="5" fill={fc.ac}/><rect x="4" y="11" width="8" height="3" fill={fc.ac}/><rect x="3" y="8" width="2" height="2" fill={fc.ac}/><rect x="11" y="8" width="2" height="2" fill={fc.ac}/></>}
             {card.val==="J"&&<><rect x="6" y="2" width="4" height="4" fill={fc.ac}/><rect x="5" y="6" width="6" height="4" fill={fc.ac}/><rect x="6" y="10" width="4" height="4" fill={fc.ac}/><rect x="4" y="8" width="2" height="2" fill={fc.ac}/></>}
           </svg>
-          <div style={{fontSize:6,color:fc.ac,fontFamily:PX,lineHeight:1,alignSelf:"flex-end",paddingRight:2,transform:"rotate(180deg)"}}>{card.val}</div>
+          <div style={{fontSize:12,color:fc.ac,fontFamily:PX,lineHeight:1,alignSelf:"flex-end",paddingRight:2,transform:"rotate(180deg)"}}>{card.val}</div>
         </>
       ):(
         <>
-          <div style={{fontSize:card.val==="10"?8:9,fontWeight:"bold",color:sc,fontFamily:PX,lineHeight:1,alignSelf:"flex-start"}}>{card.val}</div>
+          <div style={{fontSize:card.val==="10"?12:14,fontWeight:"bold",color:sc,fontFamily:PX,lineHeight:1,alignSelf:"flex-start"}}>{card.val}</div>
           <svg width="20" height="20" viewBox="0 0 16 16" style={{imageRendering:"pixelated"}}><path d={SUIT_PATH[card.suit]} fill={sc}/></svg>
-          <div style={{fontSize:card.val==="10"?8:9,fontWeight:"bold",color:sc,fontFamily:PX,lineHeight:1,alignSelf:"flex-end",transform:"rotate(180deg)"}}>{card.val}</div>
+          <div style={{fontSize:card.val==="10"?12:14,fontWeight:"bold",color:sc,fontFamily:PX,lineHeight:1,alignSelf:"flex-end",transform:"rotate(180deg)"}}>{card.val}</div>
         </>
       )}
     </div>
@@ -486,7 +486,7 @@ function CardFace({card,onClick,hi,dim}){
 
 function CardBack({hasSecret}){
   return(
-    <div style={{width:46,height:64,borderRadius:3,flexShrink:0,border:hasSecret?"2px solid #c9a84c":"2px solid #8B0000",boxShadow:hasSecret?"0 0 6px #c9a84c55,3px 3px 0 #000":"3px 3px 0 #000",background:"#1a0505",imageRendering:"pixelated",overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center"}}>
+    <div style={{width:56,height:78,borderRadius:3,flexShrink:0,border:hasSecret?"2px solid #c9a84c":"2px solid #8B0000",boxShadow:hasSecret?"0 0 6px #c9a84c55,3px 3px 0 #000":"3px 3px 0 #000",background:"#1a0505",imageRendering:"pixelated",overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center"}}>
       <svg width="40" height="58" viewBox="0 0 40 58">
         {Array.from({length:5}).map((_,row)=>Array.from({length:4}).map((_,col)=>(
           <rect key={row+","+col} x={col*10+1} y={row*11+2} width={8} height={9} fill={(row+col)%2===0?"#5a0000":"#3d0000"}/>
@@ -500,10 +500,10 @@ function CardBack({hasSecret}){
 function WildBack({wild}){
   const rc=RCLR[wild.rarity];
   return(
-    <div style={{width:46,height:64,borderRadius:3,flexShrink:0,border:"2px solid "+rc,boxShadow:"0 0 8px "+rc+",3px 3px 0 #000",background:"#080010",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:3}}>
-      <div style={{fontSize:5,color:rc,fontFamily:PX}}>WILD</div>
-      <div style={{fontSize:12,color:rc,fontFamily:PX}}>W</div>
-      <div style={{fontSize:4,color:rc+"aa",fontFamily:PX}}>{wild.rarity.slice(0,4)}</div>
+    <div style={{width:56,height:78,borderRadius:3,flexShrink:0,border:"2px solid "+rc,boxShadow:"0 0 8px "+rc+",3px 3px 0 #000",background:"#080010",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:3}}>
+      <div style={{fontSize:8,color:rc,fontFamily:PX}}>WILD</div>
+      <div style={{fontSize:18,color:rc,fontFamily:PX}}>W</div>
+      <div style={{fontSize:7,color:rc+"aa",fontFamily:PX}}>{wild.rarity.slice(0,4)}</div>
     </div>
   );
 }
@@ -559,15 +559,15 @@ function HeldSlot({part,index,onUse}){
   if(!part){
     return(
       <div style={{width:80,height:54,border:"1px dashed #2a2a2a",borderRadius:3,display:"flex",alignItems:"center",justifyContent:"center",background:"#0a0a0a"}}>
-        <div style={{fontSize:5,color:"#333",fontFamily:PX}}>{"SLOT "+(index+1)}</div>
+        <div style={{fontSize:8,color:"#333",fontFamily:PX}}>{"SLOT "+(index+1)}</div>
       </div>
     );
   }
   return(
     <div onClick={onUse} style={{width:80,height:54,border:"2px solid "+CCAT[part.cat],borderRadius:3,background:"#0d0d0d",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:4,gap:3,boxShadow:"2px 2px 0 "+CCAT[part.cat]+"44"}}>
-      <div style={{fontSize:6,color:GOLD,fontFamily:PX,textAlign:"center",lineHeight:1.4}}>{part.name}</div>
-      <div style={{fontSize:5,color:CCAT[part.cat],fontFamily:PX}}>{part.cat}</div>
-      <div style={{fontSize:5,color:"#555",fontFamily:PX}}>TAP USE</div>
+      <div style={{fontSize:10,color:GOLD,fontFamily:PX,textAlign:"center",lineHeight:1.4}}>{part.name}</div>
+      <div style={{fontSize:8,color:CCAT[part.cat],fontFamily:PX}}>{part.cat}</div>
+      <div style={{fontSize:8,color:"#555",fontFamily:PX}}>TAP USE</div>
     </div>
   );
 }
@@ -619,7 +619,7 @@ export default function App(){
   const [rivalLap,setRivalLap]   = useState(0);
   const [rival,setRival]         = useState(RIVALS[0]);
   const [raceParts,setRaceParts] = useState([]);
-  const [heldParts,setHeldParts] = useState([null,null,null]);
+
   const [offer,setOffer]         = useState(null);
   const [shopMods,setShopMods]   = useState([]);
   const [wildFlash,setWildFlash] = useState(null);
@@ -790,8 +790,7 @@ export default function App(){
       newTab=newTab.map(row=>row.map(card=>({...card,faceUp:true})));
     }
     setScreen("race");
-    const delay=8000+Math.random()*14000;
-    radioRef.current=setTimeout(()=>{if(!crackleRef.current){crackleRef.current=true;doTriggerOffer("RADIO CRACKLE",[]);}},delay);
+
   }
 
   function advanceTableau(carryTop,carryCombo,currentLapCount){
@@ -845,14 +844,13 @@ export default function App(){
     if(wild.id==="ghost")   {setGhostLap(true);setRivalFrozen(true);setMsg("GHOST LAP. COMBO UNBREAKABLE.");}
   }
 
-  function doInstallPart(part,slotIndex){
-    const scale=catScale(raceParts,part.cat);
-    if(part.id==="turbo")        setRangeBuff(v=>v+Math.ceil(4*scale));
-    if(part.id==="injector")     setFreeDraws(v=>v+Math.ceil(3*scale));
-    if(part.id==="richmix")      setBonusCombo(v=>v+Math.ceil(5*scale));
-    if(part.id==="soft")         setSuitBonus(v=>v+Math.ceil(6*scale));
-    if(part.id==="blankets")     setFreeOp(v=>v+Math.ceil(3*scale));
-    if(part.id==="downforce")    setRivalSlow(v=>v+0.15*scale);
+  function doInstallPart(part){
+    if(part.id==="turbo")        setRangeBuff(v=>v+4);
+    if(part.id==="injector")     setFreeDraws(v=>v+3);
+    if(part.id==="richmix")      setBonusCombo(v=>v+5);
+    if(part.id==="soft")         setSuitBonus(v=>v+6);
+    if(part.id==="blankets")     setFreeOp(v=>v+3);
+    if(part.id==="downforce")    setRivalSlow(v=>v+0.15);
     if(part.id==="hard")         {setRivalSlow(v=>v+0.2);setHardCompound(true);}
     if(part.id==="reserve")      setReserveTank(true);
     if(part.id==="octane")       setDoubleCredits(true);
@@ -863,16 +861,12 @@ export default function App(){
     setRaceParts(rp=>rp.concat([part]));
     const nt=totalParts+1;setTotalParts(nt);
     if(myPerks.indexOf("grease")<0&&nt>=20)setMyPerks(p=>p.concat(["grease"]));
-    if(slotIndex!=null)setHeldParts(h=>{const n=h.slice();n[slotIndex]=null;return n;});
-    const ss=scale<1?" ("+Math.round(scale*100)+"%)":"";
-    setMsg(part.name+ss+" - "+part.emilio);
+    setMsg(part.name+" - "+part.emilio);
   }
 
   function acceptOffer(part,banner){
-    setHeldParts(h=>{const n=h.slice();const e=n.indexOf(null);if(e>=0){n[e]=part;return n;}n[0]=n[1];n[1]=n[2];n[2]=part;return n;});
-    setMsg(part.name+" HELD - TAP SLOT TO USE");
+    doInstallPart(part);
     setOffer(null);
-    // If offer came from tableau clear, advance now that player has chosen
     if(banner&&banner.carryTop){
       advanceTableau(banner.carryTop,banner.carryCombo,banner.carryLapCount);
     }
@@ -986,6 +980,11 @@ export default function App(){
     setTabCleared(newTabCleared);
     setLapCount(newLapCount);
     checkHaleAbilities(newLapCount);
+    // Halftime offer — fires once per tableau at card 9
+    if(newTabCleared===9&&!offer){
+      const snap=raceParts.slice();
+      setTimeout(()=>doTriggerOffer("HALFTIME - PIT RADIO",snap),300);
+    }
     const cs=nc>=8?" CHAIN x"+nc+"!":nc>=5?" COMBO x"+nc:"";
     setMsg("LAP "+newLapCount+"/"+format.distance+"  "+card.val+card.suit+cs);
 
@@ -1036,7 +1035,7 @@ export default function App(){
       },1800);
       return;
     }
-    if(nc===5||nc===8){const snap=raceParts.slice();setTimeout(()=>doTriggerOffer("COMBO x"+nc,snap),300);}
+
   }
 
   function drawStock(){
@@ -1237,38 +1236,38 @@ export default function App(){
   if(screen==="title"){
     return(
       <div style={{minHeight:"100vh",background:DARK,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:PX,color:GOLD,padding:20,backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,255,255,0.01) 2px,rgba(255,255,255,0.01) 4px)"}}>
-        <div style={{fontSize:8,letterSpacing:4,color:"#444",marginBottom:10}}>INSERT COIN</div>
-        <div style={{fontSize:28,letterSpacing:2,textShadow:"4px 4px 0 #8B0000,0 0 20px "+GOLD,lineHeight:1.4,textAlign:"center",marginBottom:4}}>GRAND</div>
-        <div style={{fontSize:28,letterSpacing:2,textShadow:"4px 4px 0 #8B0000,0 0 20px "+GOLD,lineHeight:1.4,textAlign:"center",marginBottom:2}}>PRIX</div>
-        <div style={{fontSize:20,letterSpacing:6,color:RED,textShadow:"3px 3px 0 #5a0000",marginBottom:6}}>ROUGE</div>
-        <div style={{fontSize:7,color:"#555",marginBottom:28}}>1974  C  VOSS RACING</div>
+        <div style={{fontSize:13,letterSpacing:4,color:"#444",marginBottom:10}}>INSERT COIN</div>
+        <div style={{fontSize:36,letterSpacing:2,textShadow:"4px 4px 0 #8B0000,0 0 20px "+GOLD,lineHeight:1.4,textAlign:"center",marginBottom:4}}>GRAND</div>
+        <div style={{fontSize:36,letterSpacing:2,textShadow:"4px 4px 0 #8B0000,0 0 20px "+GOLD,lineHeight:1.4,textAlign:"center",marginBottom:2}}>PRIX</div>
+        <div style={{fontSize:26,letterSpacing:6,color:RED,textShadow:"3px 3px 0 #5a0000",marginBottom:6}}>ROUGE</div>
+        <div style={{fontSize:11,color:"#555",marginBottom:28}}>1974  C  VOSS RACING</div>
         <div style={{border:"2px solid #333",borderRadius:4,padding:"16px 20px",marginBottom:16,maxWidth:300,textAlign:"center",background:"#0a0a0a"}}>
-          <div style={{color:"#aaa",fontSize:7,lineHeight:2.2}}>
+          <div style={{color:"#aaa",fontSize:11,lineHeight:2.2}}>
             {"MARCO VOSS - ROOKIE"}<br/>{"FATHER'S CHAMPIONSHIP"}<br/>{"WAS STOLEN."}<br/>
             <span style={{color:GOLD}}>{"FIND THE TRUTH."}</span>
           </div>
         </div>
         <div style={{marginBottom:16,width:"100%",maxWidth:300}}>
-          <div style={{fontSize:6,color:"#555",marginBottom:8,letterSpacing:2}}>SEASON {season} RACE FORMATS</div>
+          <div style={{fontSize:10,color:"#555",marginBottom:8,letterSpacing:2}}>SEASON {season} RACE FORMATS</div>
           {RACE_FORMATS.slice(0,4).map((f,i)=>(
             <div key={f.id} style={{display:"flex",justifyContent:"space-between",padding:"4px 8px",marginBottom:3,background:i===raceNum-1?"#1a1a0a":"#0d0d0d",border:"1px solid "+(i===raceNum-1?GOLD+"44":"#1a1a1a")}}>
-              <div style={{fontSize:6,color:i===raceNum-1?GOLD:"#555"}}>{"R"+(i+1)+" "+f.label}</div>
+              <div style={{fontSize:10,color:i===raceNum-1?GOLD:"#555"}}>{"R"+(i+1)+" "+f.label}</div>
               <div style={{display:"flex",gap:6,alignItems:"center"}}>
-                <div style={{fontSize:6,color:["#2dc653","#f4a261","#e63946","#9b5de5"][i]}}>{["LEARN","HARD","BRUTAL","UPGRADE REQ"][i]}</div>
-                <div style={{fontSize:6,color:"#555"}}>{f.distance+" LAPS"}</div>
+                <div style={{fontSize:10,color:["#2dc653","#f4a261","#e63946","#9b5de5"][i]}}>{["LEARN","HARD","BRUTAL","UPGRADE REQ"][i]}</div>
+                <div style={{fontSize:10,color:"#555"}}>{f.distance+" LAPS"}</div>
               </div>
             </div>
           ))}
         </div>
         {myPerks.length>0&&(
           <div style={{marginBottom:14,display:"flex",gap:6,flexWrap:"wrap",justifyContent:"center",maxWidth:300}}>
-            {myPerks.map(pid=>{const p=PERKS.find(x=>x.id===pid);return p?<div key={pid} style={{border:"1px solid "+GOLD+"44",borderRadius:2,padding:"4px 8px",fontSize:6,color:GOLD}}>{p.name}</div>:null;})}
+            {myPerks.map(pid=>{const p=PERKS.find(x=>x.id===pid);return p?<div key={pid} style={{border:"1px solid "+GOLD+"44",borderRadius:2,padding:"4px 8px",fontSize:10,color:GOLD}}>{p.name}</div>:null;})}
           </div>
         )}
-        <button onClick={()=>{checkVehicleUnlocks();setScreen("vehicleselect");}} style={{background:RED,color:"#fff",border:"none",padding:"14px 32px",fontSize:10,fontFamily:PX,cursor:"pointer",letterSpacing:2,boxShadow:"4px 4px 0 #8B0000",marginBottom:8}}>
+        <button onClick={()=>{checkVehicleUnlocks();setScreen("vehicleselect");}} style={{background:RED,color:"#fff",border:"none",padding:"14px 32px",fontSize:16,fontFamily:PX,cursor:"pointer",letterSpacing:2,boxShadow:"4px 4px 0 #8B0000",marginBottom:8}}>
           START ENGINE
         </button>
-        <div style={{fontSize:6,color:"#444",marginTop:8}}>{"SEASON "+season}</div>
+        <div style={{fontSize:10,color:"#444",marginTop:8}}>{"SEASON "+season}</div>
       </div>
     );
   }
@@ -1281,69 +1280,69 @@ export default function App(){
         {/* Lap banner overlay */}
         {lapBanner&&(
           <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.95)",zIndex:250,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20}}>
-            <div style={{fontSize:7,color:"#555",letterSpacing:4,marginBottom:8}}>TABLEAU CLEARED</div>
-            <div style={{fontSize:18,color:GOLD,textShadow:"3px 3px 0 #8B6914",marginBottom:12}}>{"T"+lapBanner.tableau+"/"+lapBanner.totalTableaus}</div>
-            <div style={{fontSize:9,color:"#2dc653",marginBottom:6}}>{"LAP "+lapBanner.lapCount+" / "+lapBanner.total}</div>
-            {lapBanner.combo>1&&<div style={{fontSize:12,color:lapBanner.combo>=8?RED:GOLD,marginBottom:6,textShadow:"0 0 10px currentColor"}}>{"COMBO x"+lapBanner.combo+" CARRIES"}</div>}
-            <div style={{fontSize:7,color:"#555",marginTop:4}}>NEXT TOP CARD: {lapBanner.topCard.val}{lapBanner.topCard.suit}</div>
+            <div style={{fontSize:11,color:"#555",letterSpacing:4,marginBottom:8}}>TABLEAU CLEARED</div>
+            <div style={{fontSize:24,color:GOLD,textShadow:"3px 3px 0 #8B6914",marginBottom:12}}>{"T"+lapBanner.tableau+"/"+lapBanner.totalTableaus}</div>
+            <div style={{fontSize:14,color:"#2dc653",marginBottom:6}}>{"LAP "+lapBanner.lapCount+" / "+lapBanner.total}</div>
+            {lapBanner.combo>1&&<div style={{fontSize:18,color:lapBanner.combo>=8?RED:GOLD,marginBottom:6,textShadow:"0 0 10px currentColor"}}>{"COMBO x"+lapBanner.combo+" CARRIES"}</div>}
+            <div style={{fontSize:11,color:"#555",marginTop:4}}>NEXT TOP CARD: {lapBanner.topCard.val}{lapBanner.topCard.suit}</div>
           </div>
         )}
 
         {/* Wild card flash */}
         {wildFlash&&(
           <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.93)",zIndex:300,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20}}>
-            <div style={{fontSize:7,color:wildFlash.color,letterSpacing:4,marginBottom:8,fontFamily:PX}}>{wildFlash.wild.rarity}</div>
-            <div style={{fontSize:14,color:wildFlash.color,fontFamily:PX,textShadow:"0 0 20px "+wildFlash.color,marginBottom:8,textAlign:"center"}}>{wildFlash.wild.name}</div>
-            <div style={{fontSize:7,color:"#888",fontFamily:"Georgia,serif",fontStyle:"italic",marginBottom:12,textAlign:"center",maxWidth:260,lineHeight:1.8}}>{wildFlash.wild.flavor}</div>
-            <div style={{fontSize:7,color:wildFlash.color,fontFamily:PX,textAlign:"center",lineHeight:1.8,border:"1px solid "+wildFlash.color+"44",padding:"8px 16px"}}>{wildFlash.wild.effect}</div>
+            <div style={{fontSize:11,color:wildFlash.color,letterSpacing:4,marginBottom:8,fontFamily:PX}}>{wildFlash.wild.rarity}</div>
+            <div style={{fontSize:20,color:wildFlash.color,fontFamily:PX,textShadow:"0 0 20px "+wildFlash.color,marginBottom:8,textAlign:"center"}}>{wildFlash.wild.name}</div>
+            <div style={{fontSize:11,color:"#888",fontFamily:"Georgia,serif",fontStyle:"italic",marginBottom:12,textAlign:"center",maxWidth:260,lineHeight:1.8}}>{wildFlash.wild.flavor}</div>
+            <div style={{fontSize:11,color:wildFlash.color,fontFamily:PX,textAlign:"center",lineHeight:1.8,border:"1px solid "+wildFlash.color+"44",padding:"8px 16px"}}>{wildFlash.wild.effect}</div>
           </div>
         )}
 
         {/* Parts offer */}
         {offer&&(
           <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.96)",zIndex:9999,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:16,fontFamily:PX}}>
-            <div style={{fontSize:7,color:"#555",marginBottom:6,letterSpacing:3}}>-- PIT RADIO --</div>
+            <div style={{fontSize:11,color:"#555",marginBottom:6,letterSpacing:3}}>-- PIT STOP --</div>
             <div style={{fontSize:11,color:GOLD,marginBottom:4,textShadow:"2px 2px 0 #8B6914"}}>PARTS OFFER</div>
-            <div style={{fontSize:7,color:"#666",marginBottom:20}}>{offer.label}</div>
+            <div style={{fontSize:11,color:"#666",marginBottom:20}}>{offer.label}</div>
             <div style={{display:"flex",gap:12,flexWrap:"wrap",justifyContent:"center",maxWidth:340,marginBottom:16}}>
               {offer.parts.map(part=>{
                 const sc=catScale(raceParts,part.cat);
                 return(
                   <div key={part.id} onClick={()=>acceptOffer(part,lapBanner)} style={{background:"#0d0d0d",border:"2px solid "+CCAT[part.cat],padding:"14px 12px",width:130,cursor:"pointer",opacity:sc<1?0.7:1,boxShadow:"3px 3px 0 "+CCAT[part.cat]+"44"}}>
-                    <div style={{fontSize:9,color:GOLD,marginBottom:6,lineHeight:1.6}}>{part.name}</div>
-                    <div style={{fontSize:6,color:"#888",marginBottom:8,lineHeight:1.8}}>{part.effect}</div>
-                    <div style={{fontSize:6,color:CCAT[part.cat],fontWeight:"bold"}}>{part.cat}</div>
-                    {sc<1&&<div style={{fontSize:6,color:GOLD,marginTop:4}}>{"!! "+Math.round(sc*100)+"%"}</div>}
+                    <div style={{fontSize:14,color:GOLD,marginBottom:6,lineHeight:1.6}}>{part.name}</div>
+                    <div style={{fontSize:10,color:"#888",marginBottom:8,lineHeight:1.8}}>{part.effect}</div>
+                    <div style={{fontSize:10,color:CCAT[part.cat],fontWeight:"bold"}}>{part.cat}</div>
+                    {sc<1&&<div style={{fontSize:10,color:GOLD,marginTop:4}}>{"!! "+Math.round(sc*100)+"%"}</div>}
                   </div>
                 );
               })}
             </div>
-            <div style={{fontSize:6,color:"#444"}}>TAP CARD TO HOLD  |  RACE PAUSED</div>
+            <div style={{fontSize:10,color:"#444"}}>TAP A CARD TO INSTALL IT  |  RACE PAUSED</div>
           </div>
         )}
 
         {/* Collectible discovery banner */}
         {discovery&&(
           <div style={{position:"fixed",bottom:80,left:"50%",transform:"translateX(-50%)",zIndex:150,background:"#0d0a00",border:"2px solid #c9a84c",padding:"10px 18px",maxWidth:320,boxShadow:"0 0 20px #c9a84c44,4px 4px 0 #000",textAlign:"center"}}>
-            <div style={{fontSize:6,color:"#c9a84c",letterSpacing:3,marginBottom:4,fontFamily:PX}}>FOUND</div>
-            <div style={{fontSize:8,color:GOLD,fontFamily:PX,marginBottom:4,lineHeight:1.6}}>{discovery.name}</div>
-            <div style={{fontSize:6,color:"#888",fontFamily:"Georgia,serif",fontStyle:"italic",lineHeight:1.6}}>{discovery.flavor}</div>
-            <div style={{marginTop:6,fontSize:5,color:"#555",fontFamily:PX}}>{"COLLECTION: "+collected.length+"/40"}</div>
+            <div style={{fontSize:10,color:"#c9a84c",letterSpacing:3,marginBottom:4,fontFamily:PX}}>FOUND</div>
+            <div style={{fontSize:13,color:GOLD,fontFamily:PX,marginBottom:4,lineHeight:1.6}}>{discovery.name}</div>
+            <div style={{fontSize:10,color:"#888",fontFamily:"Georgia,serif",fontStyle:"italic",lineHeight:1.6}}>{discovery.flavor}</div>
+            <div style={{marginTop:6,fontSize:8,color:"#555",fontFamily:PX}}>{"COLLECTION: "+collected.length+"/40"}</div>
           </div>
         )}
 
         {/* Hale warning banner */}
         {haleWarning&&(
-          <div style={{width:"100%",maxWidth:500,background:RED+"22",border:"1px solid "+RED,padding:"6px 12px",marginBottom:6,textAlign:"center",fontSize:7,color:RED,letterSpacing:1}}>
+          <div style={{width:"100%",maxWidth:500,background:RED+"22",border:"1px solid "+RED,padding:"6px 12px",marginBottom:6,textAlign:"center",fontSize:11,color:RED,letterSpacing:1}}>
             {haleWarning}
           </div>
         )}
 
         {/* Header */}
         <div style={{width:"100%",maxWidth:500,marginBottom:6,background:"#111",border:"1px solid #2a2a2a",padding:"6px 12px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-          <div style={{fontSize:6,color:vehicle.color}}>{vehicle.icon+" "+format.label}</div>
-          <div style={{fontSize:7,color:GOLD,textShadow:"1px 1px 0 #8B6914"}}>GRAND PRIX ROUGE</div>
-          <div style={{display:"flex",gap:10,fontSize:7}}>
+          <div style={{fontSize:10,color:vehicle.color}}>{vehicle.icon+" "+format.label}</div>
+          <div style={{fontSize:11,color:GOLD,textShadow:"1px 1px 0 #8B6914"}}>GRAND PRIX ROUGE</div>
+          <div style={{display:"flex",gap:10,fontSize:11}}>
             <span style={{color:GOLD}}>{"T:"+trophies}</span>
             <span style={{color:"#2dc653"}}>{"C:"+credits}</span>
           </div>
@@ -1352,24 +1351,24 @@ export default function App(){
         {/* Lap counter — the headline stat */}
         <div style={{width:"100%",maxWidth:500,marginBottom:6,background:"#0d0d0d",border:"1px solid #1a1a1a",padding:"8px 12px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
           <div>
-            <div style={{fontSize:6,color:"#555",marginBottom:3,letterSpacing:2}}>LAP</div>
-            <div style={{fontSize:20,color:GOLD,textShadow:"2px 2px 0 #8B6914",lineHeight:1}}>
-              {lapCount}<span style={{fontSize:9,color:"#555"}}>{"/"+ format.distance}</span>
+            <div style={{fontSize:10,color:"#555",marginBottom:3,letterSpacing:2}}>LAP</div>
+            <div style={{fontSize:26,color:GOLD,textShadow:"2px 2px 0 #8B6914",lineHeight:1}}>
+              {lapCount}<span style={{fontSize:14,color:"#555"}}>{"/"+ format.distance}</span>
             </div>
           </div>
           <div style={{textAlign:"center"}}>
-            <div style={{fontSize:6,color:"#555",marginBottom:3,letterSpacing:2}}>TABLEAU</div>
-            <div style={{fontSize:12,color:"#888"}}>{tabNum}<span style={{fontSize:8,color:"#444"}}>{"/"+ format.tableaus}</span></div>
+            <div style={{fontSize:10,color:"#555",marginBottom:3,letterSpacing:2}}>TABLEAU</div>
+            <div style={{fontSize:18,color:"#888"}}>{tabNum}<span style={{fontSize:13,color:"#444"}}>{"/"+ format.tableaus}</span></div>
           </div>
           <div style={{textAlign:"right"}}>
-            <div style={{fontSize:6,color:"#555",marginBottom:3,letterSpacing:2}}>IN TAB</div>
-            <div style={{fontSize:12,color:"#aaa"}}>{tabCleared}<span style={{fontSize:8,color:"#444"}}>/18</span></div>
+            <div style={{fontSize:10,color:"#555",marginBottom:3,letterSpacing:2}}>IN TAB</div>
+            <div style={{fontSize:18,color:"#aaa"}}>{tabCleared}<span style={{fontSize:13,color:"#444"}}>/18</span></div>
           </div>
         </div>
 
         {/* Track */}
         <div style={{width:"100%",maxWidth:500,marginBottom:6,background:"#0d0d0d",border:"1px solid #1a1a1a",padding:"6px 8px"}}>
-          <div style={{display:"flex",justifyContent:"space-between",marginBottom:3,fontSize:6,color:"#555"}}>
+          <div style={{display:"flex",justifyContent:"space-between",marginBottom:3,fontSize:10,color:"#555"}}>
             <span style={{color:GOLD}}>{"MARCO  "+lapCount+" LAPS"}</span>
             <span style={{color:rivalSurge?RED:rival.color}}>{rival.name+"  "+rivalLap+" LAPS"+(rivalSurge?" !SURGE!":"")}</span>
           </div>
@@ -1378,12 +1377,12 @@ export default function App(){
 
         {buffTags.length>0&&(
           <div style={{display:"flex",gap:4,marginBottom:5,flexWrap:"wrap",justifyContent:"center"}}>
-            {buffTags.map((t,i)=><span key={i} style={{border:"1px solid "+t.c+"55",padding:"2px 6px",fontSize:5,color:t.c,background:"#111"}}>{t.l}</span>)}
+            {buffTags.map((t,i)=><span key={i} style={{border:"1px solid "+t.c+"55",padding:"2px 6px",fontSize:8,color:t.c,background:"#111"}}>{t.l}</span>)}
           </div>
         )}
 
-        {offer&&<div style={{width:"100%",maxWidth:500,marginBottom:4,background:GOLD,padding:"6px",fontSize:7,color:DARK,textAlign:"center",fontFamily:PX,cursor:"pointer"}} onClick={()=>window.scrollTo(0,0)}>PARTS OFFER WAITING — TAP HERE</div>}
-        <div style={{width:"100%",maxWidth:500,marginBottom:6,background:"#0d0d0d",border:"1px solid #1a1a1a",padding:"5px 10px",fontSize:6,color:"#ccc",textAlign:"center",minHeight:20,letterSpacing:1}}>
+        {offer&&<div style={{width:"100%",maxWidth:500,marginBottom:4,background:GOLD,padding:"6px",fontSize:11,color:DARK,textAlign:"center",fontFamily:PX,cursor:"pointer"}} onClick={()=>window.scrollTo(0,0)}>PARTS OFFER WAITING — TAP HERE</div>}
+        <div style={{width:"100%",maxWidth:500,marginBottom:6,background:"#0d0d0d",border:"1px solid #1a1a1a",padding:"5px 10px",fontSize:10,color:"#ccc",textAlign:"center",minHeight:20,letterSpacing:1}}>
           {vRules.groupPlay&&truckGroup.length>0
             ? "GROUP: "+truckGroup.map(g=>g.card.val+g.card.suit).join(" - ")+" ("+truckGroup.length+"/3) — TAP 3RD TO CONFIRM"
             : vRules.groupPlay&&truckGroup.length===0
@@ -1409,31 +1408,23 @@ export default function App(){
         {/* Stock + top + combo */}
         <div style={{display:"flex",alignItems:"center",gap:16,marginBottom:10}}>
           <div style={{textAlign:"center"}}>
-            <div style={{fontSize:6,color:"#444",marginBottom:4,letterSpacing:1}}>{"STOCK("+stock.length+")"}</div>
+            <div style={{fontSize:10,color:"#444",marginBottom:4,letterSpacing:1}}>{"STOCK("+stock.length+")"}</div>
             <div onClick={drawStock} style={{cursor:"pointer"}}>
               {stock.length>0?(stock[0]&&stock[0].isWild?<WildBack wild={stock[0].wildData}/>:<CardBack/>):<div style={{width:46,height:64,border:"2px dashed #2a2a2a",borderRadius:3}}/>}
             </div>
           </div>
           <div style={{textAlign:"center"}}>
-            <div style={{fontSize:6,color:"#444",marginBottom:4,letterSpacing:1}}>TOP CARD</div>
+            <div style={{fontSize:10,color:"#444",marginBottom:4,letterSpacing:1}}>TOP CARD</div>
             {top&&<CardFace card={top}/>}
           </div>
           <ComboMeter combo={combo}/>
         </div>
 
-        {/* Held parts */}
-        <div style={{width:"100%",maxWidth:500,marginBottom:8}}>
-          <div style={{fontSize:6,color:"#555",marginBottom:6,letterSpacing:2}}>HELD PARTS</div>
-          <div style={{display:"flex",gap:6}}>
-            {heldParts.map((part,i)=>(
-              <HeldSlot key={i} part={part} index={i} onUse={()=>{if(part)doInstallPart(part,i);}}/>
-            ))}
-          </div>
-        </div>
+
 
         {raceParts.length>0&&(
           <div style={{display:"flex",gap:4,flexWrap:"wrap",justifyContent:"center"}}>
-            {raceParts.map((p,i)=><div key={i} style={{border:"1px solid "+CCAT[p.cat]+"55",padding:"2px 6px",fontSize:5,color:CCAT[p.cat],background:"#0d0d0d"}}>{p.name}</div>)}
+            {raceParts.map((p,i)=><div key={i} style={{border:"1px solid "+CCAT[p.cat]+"55",padding:"2px 6px",fontSize:8,color:CCAT[p.cat],background:"#0d0d0d"}}>{p.name}</div>)}
           </div>
         )}
       </div>
@@ -1444,9 +1435,9 @@ export default function App(){
   if(screen==="vehicleselect"){
     return(
       <div style={{minHeight:"100vh",background:DARK,color:GOLD,fontFamily:PX,padding:"18px 14px",display:"flex",flexDirection:"column",alignItems:"center",backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(255,255,255,0.008) 3px,rgba(255,255,255,0.008) 6px)"}}>
-        <div style={{fontSize:6,color:"#555",letterSpacing:4,marginBottom:6}}>SEASON {season}</div>
-        <div style={{fontSize:14,letterSpacing:2,marginBottom:4,textShadow:"3px 3px 0 #8B6914"}}>CHOOSE YOUR VEHICLE</div>
-        <div style={{fontSize:6,color:"#555",marginBottom:20,letterSpacing:2}}>COMMIT FOR THE WHOLE SEASON</div>
+        <div style={{fontSize:10,color:"#555",letterSpacing:4,marginBottom:6}}>SEASON {season}</div>
+        <div style={{fontSize:20,letterSpacing:2,marginBottom:4,textShadow:"3px 3px 0 #8B6914"}}>CHOOSE YOUR VEHICLE</div>
+        <div style={{fontSize:10,color:"#555",marginBottom:20,letterSpacing:2}}>COMMIT FOR THE WHOLE SEASON</div>
         <div style={{display:"flex",flexDirection:"column",gap:8,width:"100%",maxWidth:440,marginBottom:20}}>
           {VEHICLES.map(v=>{
             const locked=unlockedVehicles.indexOf(v.id)<0;
@@ -1454,20 +1445,20 @@ export default function App(){
             return(
               <div key={v.id} onClick={()=>{if(!locked)setVehicle(v);}} style={{background:selected?"#0d0a00":locked?"#080808":"#0d0d0d",border:"2px solid "+(selected?v.color:locked?"#1a1a1a":"#2a2a2a"),padding:"12px 14px",cursor:locked?"default":"pointer",opacity:locked?0.4:1,boxShadow:selected?"0 0 10px "+v.color+"44":"none"}}>
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>
-                  <div style={{fontSize:9,color:locked?"#333":v.color,fontFamily:PX}}>{locked?"????? ?????":v.name}</div>
-                  <div style={{fontSize:5,color:locked?"#333":"#555",fontFamily:PX}}>{locked?v.unlockDesc:v.icon}</div>
+                  <div style={{fontSize:14,color:locked?"#333":v.color,fontFamily:PX}}>{locked?"????? ?????":v.name}</div>
+                  <div style={{fontSize:8,color:locked?"#333":"#555",fontFamily:PX}}>{locked?v.unlockDesc:v.icon}</div>
                 </div>
-                {!locked&&<div style={{fontSize:6,color:"#888",lineHeight:1.6,marginBottom:6}}>{v.mechanic}</div>}
-                {!locked&&<div style={{fontSize:6,color:"#555",fontFamily:"Georgia,serif",fontStyle:"italic"}}>"{v.emilio}"</div>}
-                {locked&&<div style={{fontSize:6,color:"#333",lineHeight:1.6}}>LOCKED — {v.unlockDesc}</div>}
+                {!locked&&<div style={{fontSize:10,color:"#888",lineHeight:1.6,marginBottom:6}}>{v.mechanic}</div>}
+                {!locked&&<div style={{fontSize:10,color:"#555",fontFamily:"Georgia,serif",fontStyle:"italic"}}>"{v.emilio}"</div>}
+                {locked&&<div style={{fontSize:10,color:"#333",lineHeight:1.6}}>LOCKED — {v.unlockDesc}</div>}
               </div>
             );
           })}
         </div>
-        <button onClick={()=>{setScreen("title_ready");}} style={{background:vehicle.color,color:DARK,border:"none",padding:"13px 36px",fontSize:9,fontFamily:PX,cursor:"pointer",letterSpacing:2,boxShadow:"4px 4px 0 #000"}}>
+        <button onClick={()=>{setScreen("title_ready");}} style={{background:vehicle.color,color:DARK,border:"none",padding:"13px 36px",fontSize:14,fontFamily:PX,cursor:"pointer",letterSpacing:2,boxShadow:"4px 4px 0 #000"}}>
           {"DRIVE THE "+vehicle.name}
         </button>
-        <div style={{marginTop:10,fontSize:6,color:"#555",fontFamily:"Georgia,serif",fontStyle:"italic",maxWidth:300,textAlign:"center"}}>
+        <div style={{marginTop:10,fontSize:10,color:"#555",fontFamily:"Georgia,serif",fontStyle:"italic",maxWidth:300,textAlign:"center"}}>
           {vehicle.confirm}
         </div>
       </div>
@@ -1478,11 +1469,11 @@ export default function App(){
   if(screen==="title_ready"){
     return(
       <div style={{minHeight:"100vh",background:DARK,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:PX,color:GOLD,padding:20,backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,255,255,0.01) 2px,rgba(255,255,255,0.01) 4px)"}}>
-        <div style={{fontSize:8,color:"#555",letterSpacing:4,marginBottom:10}}>SEASON {season}</div>
-        <div style={{fontSize:18,letterSpacing:2,textShadow:"4px 4px 0 #8B0000,0 0 20px "+GOLD,lineHeight:1.4,textAlign:"center",marginBottom:6}}>{vehicle.name}</div>
-        <div style={{fontSize:7,color:vehicle.color,letterSpacing:2,marginBottom:20}}>{vehicle.icon}</div>
-        <div style={{fontSize:7,color:"#888",fontFamily:"Georgia,serif",fontStyle:"italic",marginBottom:28,maxWidth:280,textAlign:"center",lineHeight:1.8}}>"{vehicle.confirm}"</div>
-        <button onClick={()=>startRace(raceNum)} style={{background:RED,color:"#fff",border:"none",padding:"14px 32px",fontSize:10,fontFamily:PX,cursor:"pointer",letterSpacing:2,boxShadow:"4px 4px 0 #8B0000"}}>
+        <div style={{fontSize:13,color:"#555",letterSpacing:4,marginBottom:10}}>SEASON {season}</div>
+        <div style={{fontSize:24,letterSpacing:2,textShadow:"4px 4px 0 #8B0000,0 0 20px "+GOLD,lineHeight:1.4,textAlign:"center",marginBottom:6}}>{vehicle.name}</div>
+        <div style={{fontSize:11,color:vehicle.color,letterSpacing:2,marginBottom:20}}>{vehicle.icon}</div>
+        <div style={{fontSize:11,color:"#888",fontFamily:"Georgia,serif",fontStyle:"italic",marginBottom:28,maxWidth:280,textAlign:"center",lineHeight:1.8}}>"{vehicle.confirm}"</div>
+        <button onClick={()=>startRace(raceNum)} style={{background:RED,color:"#fff",border:"none",padding:"14px 32px",fontSize:16,fontFamily:PX,cursor:"pointer",letterSpacing:2,boxShadow:"4px 4px 0 #8B0000"}}>
           START ENGINE
         </button>
       </div>
@@ -1495,14 +1486,14 @@ export default function App(){
       <div style={{minHeight:"100vh",background:"#050505",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:PX,padding:24,backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(255,255,255,0.006) 3px,rgba(255,255,255,0.006) 6px)"}} onClick={advanceStory}>
         {storyMoment&&storyMoment.type==="dialogue"&&(
           <div style={{maxWidth:400,width:"100%"}}>
-            <div style={{fontSize:6,color:storyMoment.color,letterSpacing:4,marginBottom:16,textAlign:"center"}}>{storyMoment.char}</div>
+            <div style={{fontSize:10,color:storyMoment.color,letterSpacing:4,marginBottom:16,textAlign:"center"}}>{storyMoment.char}</div>
             {storyMoment.lines.slice(0,storyPage+1).map((line,i)=>(
               <div key={i} style={{marginBottom:14,opacity:i<storyPage?0.45:1,transition:"opacity 0.3s"}}>
-                <div style={{fontSize:6,color:line.speaker==="EMILIO"?"#c9a84c":line.speaker==="HALE"?"#f4d03f":line.speaker==="MARCO"?"#aaa":"#9b5de5",letterSpacing:2,marginBottom:5}}>{line.speaker}</div>
-                <div style={{fontSize:8,color:"#ddd",fontFamily:"Georgia,serif",fontStyle:"italic",lineHeight:1.9}}>"{line.text}"</div>
+                <div style={{fontSize:10,color:line.speaker==="EMILIO"?"#c9a84c":line.speaker==="HALE"?"#f4d03f":line.speaker==="MARCO"?"#aaa":"#9b5de5",letterSpacing:2,marginBottom:5}}>{line.speaker}</div>
+                <div style={{fontSize:13,color:"#ddd",fontFamily:"Georgia,serif",fontStyle:"italic",lineHeight:1.9}}>"{line.text}"</div>
               </div>
             ))}
-            <div style={{marginTop:24,fontSize:6,color:"#333",textAlign:"center",letterSpacing:2}}>
+            <div style={{marginTop:24,fontSize:10,color:"#333",textAlign:"center",letterSpacing:2}}>
               {storyPage<storyMoment.lines.length-1?"TAP TO CONTINUE":"TAP TO CONTINUE"}
             </div>
             <div style={{marginTop:8,display:"flex",justifyContent:"center",gap:6}}>
@@ -1514,12 +1505,12 @@ export default function App(){
         )}
         {storyMoment&&storyMoment.type==="find"&&(
           <div style={{maxWidth:380,width:"100%"}}>
-            <div style={{fontSize:6,color:storyMoment.color,letterSpacing:4,marginBottom:8,textAlign:"center"}}>FOUND IN THE GARAGE</div>
+            <div style={{fontSize:10,color:storyMoment.color,letterSpacing:4,marginBottom:8,textAlign:"center"}}>FOUND IN THE GARAGE</div>
             <div style={{background:"#0a0800",border:"2px solid "+storyMoment.color,padding:"20px",boxShadow:"0 0 20px "+storyMoment.color+"33,6px 6px 0 #000",marginBottom:20}}>
-              <div style={{fontSize:7,color:storyMoment.color,letterSpacing:2,marginBottom:12,textAlign:"center"}}>{storyMoment.title}</div>
-              <div style={{fontSize:7,color:"#aaa",fontFamily:"Georgia,serif",fontStyle:"italic",lineHeight:2.0}}>{storyMoment.desc}</div>
+              <div style={{fontSize:11,color:storyMoment.color,letterSpacing:2,marginBottom:12,textAlign:"center"}}>{storyMoment.title}</div>
+              <div style={{fontSize:11,color:"#aaa",fontFamily:"Georgia,serif",fontStyle:"italic",lineHeight:2.0}}>{storyMoment.desc}</div>
             </div>
-            <div style={{fontSize:6,color:"#333",textAlign:"center",letterSpacing:2}}>TAP TO CONTINUE</div>
+            <div style={{fontSize:10,color:"#333",textAlign:"center",letterSpacing:2}}>TAP TO CONTINUE</div>
           </div>
         )}
       </div>
@@ -1530,29 +1521,29 @@ export default function App(){
   if(screen==="pitstop"){
     return(
       <div style={{minHeight:"100vh",background:DARK,color:GOLD,fontFamily:PX,padding:"20px 16px",display:"flex",flexDirection:"column",alignItems:"center",backgroundImage:SL}}>
-        <div style={{fontSize:6,color:"#555",marginBottom:4,letterSpacing:4}}>{format.label+" COMPLETE"}</div>
-        <div style={{fontSize:14,letterSpacing:2,marginBottom:2,textShadow:"3px 3px 0 #8B6914"}}>PIT STOP</div>
-        <div style={{fontSize:7,color:"#555",marginBottom:4}}>{lapCount+" LAPS COMPLETED"}</div>
-        <div style={{fontSize:6,color:"#555",marginBottom:18,letterSpacing:2}}>{"SEASON "+season}</div>
+        <div style={{fontSize:10,color:"#555",marginBottom:4,letterSpacing:4}}>{format.label+" COMPLETE"}</div>
+        <div style={{fontSize:20,letterSpacing:2,marginBottom:2,textShadow:"3px 3px 0 #8B6914"}}>PIT STOP</div>
+        <div style={{fontSize:11,color:"#555",marginBottom:4}}>{lapCount+" LAPS COMPLETED"}</div>
+        <div style={{fontSize:10,color:"#555",marginBottom:18,letterSpacing:2}}>{"SEASON "+season}</div>
         <div style={{background:"#0d0d0d",border:"2px solid #2a2a2a",padding:"14px 16px",maxWidth:380,width:"100%",marginBottom:18,boxShadow:"4px 4px 0 #000"}}>
-          <div style={{fontSize:6,color:"#555",marginBottom:8,letterSpacing:2}}>EMILIO - CHIEF ENGINEER</div>
-          <div style={{fontSize:7,color:"#aaa",lineHeight:2.2,whiteSpace:"pre-line",fontFamily:"Georgia,serif",fontStyle:"italic"}}>
+          <div style={{fontSize:10,color:"#555",marginBottom:8,letterSpacing:2}}>EMILIO - CHIEF ENGINEER</div>
+          <div style={{fontSize:11,color:"#aaa",lineHeight:2.2,whiteSpace:"pre-line",fontFamily:"Georgia,serif",fontStyle:"italic"}}>
             {'"'+EMILIO_Q[Math.min(raceNum-1,EMILIO_Q.length-1)]+'"'}
           </div>
         </div>
         <div style={{display:"flex",gap:24,marginBottom:16}}>
           <div style={{textAlign:"center",background:"#0d0d0d",border:"1px solid #222",padding:"10px 16px",boxShadow:"3px 3px 0 #000"}}>
-            <div style={{fontSize:14,color:GOLD}}>{"T:"+trophies}</div>
-            <div style={{fontSize:6,color:"#555",marginTop:4}}>TROPHIES</div>
+            <div style={{fontSize:20,color:GOLD}}>{"T:"+trophies}</div>
+            <div style={{fontSize:10,color:"#555",marginTop:4}}>TROPHIES</div>
           </div>
           <div style={{textAlign:"center",background:"#0d0d0d",border:"1px solid #222",padding:"10px 16px",boxShadow:"3px 3px 0 #000"}}>
-            <div style={{fontSize:14,color:"#2dc653"}}>{"C:"+credits}</div>
-            <div style={{fontSize:6,color:"#555",marginTop:4}}>CREDITS</div>
+            <div style={{fontSize:20,color:"#2dc653"}}>{"C:"+credits}</div>
+            <div style={{fontSize:10,color:"#555",marginTop:4}}>CREDITS</div>
           </div>
         </div>
         {carMods.length>0&&(
           <div style={{marginBottom:12,display:"flex",gap:4,flexWrap:"wrap",justifyContent:"center",maxWidth:420}}>
-            {carMods.map(mid=>{const m=MODS.find(x=>x.id===mid);return m?<div key={mid} style={{border:"1px solid "+GOLD+"33",padding:"3px 8px",fontSize:6,color:GOLD,background:"#0d0d0d"}}>{m.name}</div>:null;})}
+            {carMods.map(mid=>{const m=MODS.find(x=>x.id===mid);return m?<div key={mid} style={{border:"1px solid "+GOLD+"33",padding:"3px 8px",fontSize:10,color:GOLD,background:"#0d0d0d"}}>{m.name}</div>:null;})}
           </div>
         )}
         {/* Boon offer or bonus credits */}
@@ -1561,24 +1552,24 @@ export default function App(){
             {boonOffer?(
               <div style={{background:"#0d0d0d",border:"2px solid "+boonOffer.char.color,padding:"14px 16px",boxShadow:"0 0 12px "+boonOffer.char.color+"33,4px 4px 0 #000"}}>
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
-                  <div style={{fontSize:8,color:boonOffer.char.color,fontFamily:PX}}>{boonOffer.char.name}</div>
-                  <div style={{fontSize:5,color:"#555",fontFamily:PX}}>{boonOffer.char.title}</div>
+                  <div style={{fontSize:13,color:boonOffer.char.color,fontFamily:PX}}>{boonOffer.char.name}</div>
+                  <div style={{fontSize:8,color:"#555",fontFamily:PX}}>{boonOffer.char.title}</div>
                 </div>
-                <div style={{fontSize:6,color:"#888",fontFamily:"Georgia,serif",fontStyle:"italic",lineHeight:1.8,marginBottom:10}}>"{boonOffer.boon.quote}"</div>
-                <div style={{fontSize:7,color:boonOffer.char.color,fontFamily:PX,marginBottom:4}}>{boonOffer.boon.name}</div>
-                <div style={{fontSize:6,color:"#888",lineHeight:1.6,marginBottom:12}}>{boonOffer.boon.effect}</div>
+                <div style={{fontSize:10,color:"#888",fontFamily:"Georgia,serif",fontStyle:"italic",lineHeight:1.8,marginBottom:10}}>"{boonOffer.boon.quote}"</div>
+                <div style={{fontSize:11,color:boonOffer.char.color,fontFamily:PX,marginBottom:4}}>{boonOffer.boon.name}</div>
+                <div style={{fontSize:10,color:"#888",lineHeight:1.6,marginBottom:12}}>{boonOffer.boon.effect}</div>
                 <div style={{display:"flex",gap:10}}>
-                  <button onClick={acceptBoon} style={{flex:1,background:boonOffer.char.color,color:DARK,border:"none",padding:"8px 0",fontSize:7,fontFamily:PX,cursor:"pointer",boxShadow:"3px 3px 0 #000"}}>ACCEPT</button>
-                  <button onClick={declineBoon} style={{flex:1,background:"#111",color:"#555",border:"1px solid #333",padding:"8px 0",fontSize:7,fontFamily:PX,cursor:"pointer"}}>DECLINE (+C3)</button>
+                  <button onClick={acceptBoon} style={{flex:1,background:boonOffer.char.color,color:DARK,border:"none",padding:"8px 0",fontSize:11,fontFamily:PX,cursor:"pointer",boxShadow:"3px 3px 0 #000"}}>ACCEPT</button>
+                  <button onClick={declineBoon} style={{flex:1,background:"#111",color:"#555",border:"1px solid #333",padding:"8px 0",fontSize:11,fontFamily:PX,cursor:"pointer"}}>DECLINE (+C3)</button>
                 </div>
               </div>
             ):(
               <div style={{background:"#0d0d0d",border:"1px solid #2dc65344",padding:"14px 16px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
                 <div>
-                  <div style={{fontSize:7,color:"#2dc653",fontFamily:PX,marginBottom:4}}>BONUS CREDITS</div>
-                  <div style={{fontSize:6,color:"#888"}}>No boon available this stop.</div>
+                  <div style={{fontSize:11,color:"#2dc653",fontFamily:PX,marginBottom:4}}>BONUS CREDITS</div>
+                  <div style={{fontSize:10,color:"#888"}}>No boon available this stop.</div>
                 </div>
-                <button onClick={claimBonusCredits} style={{background:"#2dc653",color:DARK,border:"none",padding:"8px 14px",fontSize:8,fontFamily:PX,cursor:"pointer",boxShadow:"3px 3px 0 #000"}}>+C{bonusCredits}</button>
+                <button onClick={claimBonusCredits} style={{background:"#2dc653",color:DARK,border:"none",padding:"8px 14px",fontSize:13,fontFamily:PX,cursor:"pointer",boxShadow:"3px 3px 0 #000"}}>+C{bonusCredits}</button>
               </div>
             )}
           </div>
@@ -1587,7 +1578,7 @@ export default function App(){
         {/* Active boons */}
         {activeBoons.length>0&&(
           <div style={{width:"100%",maxWidth:440,marginBottom:14}}>
-            <div style={{fontSize:5,color:"#555",letterSpacing:3,marginBottom:6}}>-- ACTIVE BOONS --</div>
+            <div style={{fontSize:8,color:"#555",letterSpacing:3,marginBottom:6}}>-- ACTIVE BOONS --</div>
             <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
               {activeBoons.map((bid,i)=>{
                 let name="",color="#888";
@@ -1595,13 +1586,13 @@ export default function App(){
                   const b=char.boons.find(b=>b.apply===bid);
                   if(b){name=b.name;color=char.color;}
                 });
-                return name?<div key={i} style={{border:"1px solid "+color+"44",padding:"3px 8px",fontSize:5,color:color,background:"#0d0d0d",fontFamily:PX}}>{name}</div>:null;
+                return name?<div key={i} style={{border:"1px solid "+color+"44",padding:"3px 8px",fontSize:8,color:color,background:"#0d0d0d",fontFamily:PX}}>{name}</div>:null;
               })}
             </div>
           </div>
         )}
 
-        <div style={{fontSize:7,letterSpacing:3,color:"#555",marginBottom:10}}>-- MOD SHOP --</div>
+        <div style={{fontSize:11,letterSpacing:3,color:"#555",marginBottom:10}}>-- MOD SHOP --</div>
         <div style={{display:"flex",flexDirection:"column",gap:8,width:"100%",maxWidth:420,marginBottom:20}}>
           {shopMods.map(mod=>{
             const owned=carMods.indexOf(mod.id)>=0;
@@ -1609,10 +1600,10 @@ export default function App(){
             return(
               <div key={mod.id} style={{background:"#0d0d0d",border:"2px solid "+(owned?"#2dc653":afford?GOLD+"44":"#1a1a1a"),padding:"10px 12px",display:"flex",alignItems:"center",gap:12,opacity:owned||!afford?0.5:1}}>
                 <div style={{flex:1}}>
-                  <div style={{fontSize:8,color:GOLD,marginBottom:4}}>{mod.name}</div>
-                  <div style={{fontSize:6,color:"#666",lineHeight:1.8}}>{mod.effect}</div>
+                  <div style={{fontSize:13,color:GOLD,marginBottom:4}}>{mod.name}</div>
+                  <div style={{fontSize:10,color:"#666",lineHeight:1.8}}>{mod.effect}</div>
                 </div>
-                <button onClick={()=>buyMod(mod)} disabled={owned||!afford} style={{background:owned?"transparent":afford?GOLD:"#111",color:owned?"#2dc653":afford?DARK:"#333",border:"none",padding:"6px 10px",fontSize:7,fontFamily:PX,cursor:owned||!afford?"default":"pointer"}}>
+                <button onClick={()=>buyMod(mod)} disabled={owned||!afford} style={{background:owned?"transparent":afford?GOLD:"#111",color:owned?"#2dc653":afford?DARK:"#333",border:"none",padding:"6px 10px",fontSize:11,fontFamily:PX,cursor:owned||!afford?"default":"pointer"}}>
                   {owned?"OK":"C"+mod.cost}
                 </button>
               </div>
@@ -1621,14 +1612,14 @@ export default function App(){
         </div>
         {myPerks.length>0&&(
           <div style={{marginBottom:16,width:"100%",maxWidth:420}}>
-            <div style={{fontSize:6,letterSpacing:3,color:"#444",marginBottom:8}}>-- CAREER PERKS --</div>
+            <div style={{fontSize:10,letterSpacing:3,color:"#444",marginBottom:8}}>-- CAREER PERKS --</div>
             <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-              {myPerks.map(pid=>{const p=PERKS.find(x=>x.id===pid);return p?<div key={pid} style={{border:"1px solid "+GOLD+"33",padding:"4px 8px",fontSize:6,color:GOLD,background:"#0d0d0d"}}>{p.name}</div>:null;})}
+              {myPerks.map(pid=>{const p=PERKS.find(x=>x.id===pid);return p?<div key={pid} style={{border:"1px solid "+GOLD+"33",padding:"4px 8px",fontSize:10,color:GOLD,background:"#0d0d0d"}}>{p.name}</div>:null;})}
             </div>
           </div>
         )}
-        {msg&&<div style={{color:"#2dc653",fontSize:7,marginBottom:12,textAlign:"center",lineHeight:1.8}}>{msg}</div>}
-        <button onClick={nextRace} style={{background:RED,color:"#fff",border:"none",padding:"13px 32px",fontSize:9,fontFamily:PX,cursor:"pointer",letterSpacing:2,boxShadow:"4px 4px 0 #8B0000"}}>
+        {msg&&<div style={{color:"#2dc653",fontSize:11,marginBottom:12,textAlign:"center",lineHeight:1.8}}>{msg}</div>}
+        <button onClick={nextRace} style={{background:RED,color:"#fff",border:"none",padding:"13px 32px",fontSize:14,fontFamily:PX,cursor:"pointer",letterSpacing:2,boxShadow:"4px 4px 0 #8B0000"}}>
           {raceNum>=4?"SEASON COMPLETE":"NEXT RACE"}
         </button>
       </div>
@@ -1639,16 +1630,16 @@ export default function App(){
   if(screen==="gameover"){
     return(
       <div style={{minHeight:"100vh",background:DARK,color:RED,fontFamily:PX,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20}}>
-        <div style={{fontSize:22,letterSpacing:2,textShadow:"4px 4px 0 #8B0000",marginBottom:6}}>RETIRED</div>
-        <div style={{fontSize:8,color:"#555",letterSpacing:2,marginBottom:4}}>{"LAP "+lapCount+" / "+format.distance}</div>
-        <div style={{fontSize:7,color:"#444",marginBottom:20}}>{"RACE "+raceNum+" - "+format.label+"  SEASON "+season}</div>
-        <div style={{color:"#666",fontSize:7,marginBottom:24,textAlign:"center",maxWidth:280,lineHeight:2.2}}>{"\"WE'LL GET THEM NEXT SEASON, MARCO.\""}</div>
+        <div style={{fontSize:28,letterSpacing:2,textShadow:"4px 4px 0 #8B0000",marginBottom:6}}>RETIRED</div>
+        <div style={{fontSize:13,color:"#555",letterSpacing:2,marginBottom:4}}>{"LAP "+lapCount+" / "+format.distance}</div>
+        <div style={{fontSize:11,color:"#444",marginBottom:20}}>{"RACE "+raceNum+" - "+format.label+"  SEASON "+season}</div>
+        <div style={{color:"#666",fontSize:11,marginBottom:24,textAlign:"center",maxWidth:280,lineHeight:2.2}}>{"\"WE'LL GET THEM NEXT SEASON, MARCO.\""}</div>
         {myPerks.length>0&&(
           <div style={{display:"flex",gap:6,flexWrap:"wrap",justifyContent:"center",marginBottom:24,maxWidth:340}}>
-            {myPerks.map(pid=>{const p=PERKS.find(x=>x.id===pid);return p?<div key={pid} style={{border:"1px solid "+GOLD+"22",padding:"3px 8px",fontSize:6,color:GOLD,background:"#0d0d0d"}}>{p.name}</div>:null;})}
+            {myPerks.map(pid=>{const p=PERKS.find(x=>x.id===pid);return p?<div key={pid} style={{border:"1px solid "+GOLD+"22",padding:"3px 8px",fontSize:10,color:GOLD,background:"#0d0d0d"}}>{p.name}</div>:null;})}
           </div>
         )}
-        <button onClick={newSeason} style={{background:RED,color:"#fff",border:"none",padding:"13px 32px",fontSize:9,fontFamily:PX,cursor:"pointer",letterSpacing:2,boxShadow:"4px 4px 0 #8B0000"}}>NEW SEASON</button>
+        <button onClick={newSeason} style={{background:RED,color:"#fff",border:"none",padding:"13px 32px",fontSize:14,fontFamily:PX,cursor:"pointer",letterSpacing:2,boxShadow:"4px 4px 0 #8B0000"}}>NEW SEASON</button>
       </div>
     );
   }
@@ -1657,23 +1648,23 @@ export default function App(){
   if(screen==="victory"){
     return(
       <div style={{minHeight:"100vh",background:DARK,color:GOLD,fontFamily:PX,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20}}>
-        <div style={{fontSize:22,letterSpacing:2,textShadow:"4px 4px 0 #8B6914,0 0 30px "+GOLD,marginBottom:4}}>CHAMPION</div>
-        <div style={{fontSize:8,color:"#555",letterSpacing:2,marginBottom:20}}>{"SEASON "+season+" COMPLETE"}</div>
-        <div style={{fontSize:7,color:"#aaa",marginBottom:28,textAlign:"center",maxWidth:300,lineHeight:2.2}}>
+        <div style={{fontSize:28,letterSpacing:2,textShadow:"4px 4px 0 #8B6914,0 0 30px "+GOLD,marginBottom:4}}>CHAMPION</div>
+        <div style={{fontSize:13,color:"#555",letterSpacing:2,marginBottom:20}}>{"SEASON "+season+" COMPLETE"}</div>
+        <div style={{fontSize:11,color:"#aaa",marginBottom:28,textAlign:"center",maxWidth:300,lineHeight:2.2}}>
           {"EMILIO IS WEEPING."}<br/>{"EVEN FERRI GIVES YOU A NOD."}<br/>
           <span style={{color:"#666"}}>{"\"NOT BAD, MARCO.\""}</span>
         </div>
         {myPerks.length>0&&(
           <div style={{marginBottom:28,width:"100%",maxWidth:380}}>
-            <div style={{fontSize:6,letterSpacing:3,color:"#444",marginBottom:8,textAlign:"center"}}>-- CAREER PERKS --</div>
+            <div style={{fontSize:10,letterSpacing:3,color:"#444",marginBottom:8,textAlign:"center"}}>-- CAREER PERKS --</div>
             <div style={{display:"flex",gap:6,flexWrap:"wrap",justifyContent:"center"}}>
-              {myPerks.map(pid=>{const p=PERKS.find(x=>x.id===pid);return p?<div key={pid} style={{border:"1px solid "+GOLD+"44",padding:"4px 8px",fontSize:6,color:GOLD,background:"#0d0d0d"}}>{p.name}</div>:null;})}
+              {myPerks.map(pid=>{const p=PERKS.find(x=>x.id===pid);return p?<div key={pid} style={{border:"1px solid "+GOLD+"44",padding:"4px 8px",fontSize:10,color:GOLD,background:"#0d0d0d"}}>{p.name}</div>:null;})}
             </div>
           </div>
         )}
         <div style={{display:"flex",gap:12,flexWrap:"wrap",justifyContent:"center"}}>
-          <button onClick={startThe500} style={{background:RED,color:"#fff",border:"none",padding:"13px 28px",fontSize:8,fontFamily:PX,cursor:"pointer",letterSpacing:1,boxShadow:"4px 4px 0 #8B0000"}}>THE 500</button>
-          <button onClick={()=>setScreen("garage")} style={{background:GOLD,color:DARK,border:"none",padding:"13px 28px",fontSize:8,fontFamily:PX,cursor:"pointer",letterSpacing:1,boxShadow:"4px 4px 0 #8B6914"}}>GARAGE</button>
+          <button onClick={startThe500} style={{background:RED,color:"#fff",border:"none",padding:"13px 28px",fontSize:13,fontFamily:PX,cursor:"pointer",letterSpacing:1,boxShadow:"4px 4px 0 #8B0000"}}>THE 500</button>
+          <button onClick={()=>setScreen("garage")} style={{background:GOLD,color:DARK,border:"none",padding:"13px 28px",fontSize:13,fontFamily:PX,cursor:"pointer",letterSpacing:1,boxShadow:"4px 4px 0 #8B6914"}}>GARAGE</button>
         </div>
       </div>
     );
@@ -1684,27 +1675,27 @@ export default function App(){
   if(screen==="garage"){
     return(
       <div style={{minHeight:"100vh",background:DARK,color:GOLD,fontFamily:PX,padding:"18px 14px",display:"flex",flexDirection:"column",alignItems:"center",backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(255,255,255,0.008) 3px,rgba(255,255,255,0.008) 6px)"}}>
-        <div style={{fontSize:6,color:"#555",letterSpacing:4,marginBottom:4}}>BETWEEN SEASONS</div>
-        <div style={{fontSize:16,letterSpacing:2,marginBottom:4,textShadow:"3px 3px 0 #8B6914"}}>THE GARAGE</div>
-        <div style={{fontSize:6,color:"#555",marginBottom:16,letterSpacing:2}}>{"SEASON "+(season)+" COMPLETE"}</div>
+        <div style={{fontSize:10,color:"#555",letterSpacing:4,marginBottom:4}}>BETWEEN SEASONS</div>
+        <div style={{fontSize:22,letterSpacing:2,marginBottom:4,textShadow:"3px 3px 0 #8B6914"}}>THE GARAGE</div>
+        <div style={{fontSize:10,color:"#555",marginBottom:16,letterSpacing:2}}>{"SEASON "+(season)+" COMPLETE"}</div>
 
         {/* Currency */}
         <div style={{display:"flex",gap:20,marginBottom:16}}>
           <div style={{textAlign:"center",background:"#0d0d0d",border:"1px solid #222",padding:"8px 14px",boxShadow:"3px 3px 0 #000"}}>
             <div style={{fontSize:13,color:GOLD}}>{"C:"+credits}</div>
-            <div style={{fontSize:5,color:"#555",marginTop:3}}>CREDITS</div>
+            <div style={{fontSize:8,color:"#555",marginTop:3}}>CREDITS</div>
           </div>
           <div style={{textAlign:"center",background:"#0d0d0d",border:"1px solid #222",padding:"8px 14px",boxShadow:"3px 3px 0 #000"}}>
             <div style={{fontSize:13,color:"#f4a261"}}>{"T:"+trophies}</div>
-            <div style={{fontSize:5,color:"#555",marginTop:3}}>TROPHIES</div>
+            <div style={{fontSize:8,color:"#555",marginTop:3}}>TROPHIES</div>
           </div>
         </div>
 
         {/* Emilio message */}
         {upgradeMsg&&(
           <div style={{background:"#0d0d0d",border:"1px solid #2a2a2a",padding:"10px 14px",maxWidth:360,width:"100%",marginBottom:14,boxShadow:"3px 3px 0 #000"}}>
-            <div style={{fontSize:5,color:"#555",marginBottom:5,letterSpacing:2}}>EMILIO</div>
-            <div style={{fontSize:7,color:"#aaa",fontFamily:"Georgia,serif",fontStyle:"italic",lineHeight:1.8}}>{"\""+upgradeMsg+"\""}</div>
+            <div style={{fontSize:8,color:"#555",marginBottom:5,letterSpacing:2}}>EMILIO</div>
+            <div style={{fontSize:11,color:"#aaa",fontFamily:"Georgia,serif",fontStyle:"italic",lineHeight:1.8}}>{"\""+upgradeMsg+"\""}</div>
           </div>
         )}
 
@@ -1720,9 +1711,9 @@ export default function App(){
             return(
               <div key={key} style={{background:"#0d0d0d",border:"2px solid "+(maxed?current.color:affordable?"#333":"#1a1a1a"),padding:"10px 12px",boxShadow:maxed?"0 0 8px "+current.color+"44":"none"}}>
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
-                  <div style={{fontSize:7,color:current.color,letterSpacing:1}}>{part.label}</div>
-                  <div style={{fontSize:6,color:current.color}}>{current.name}</div>
-                  {maxed&&<div style={{fontSize:5,color:current.color,border:"1px solid "+current.color,padding:"1px 5px"}}>MAX</div>}
+                  <div style={{fontSize:11,color:current.color,letterSpacing:1}}>{part.label}</div>
+                  <div style={{fontSize:10,color:current.color}}>{current.name}</div>
+                  {maxed&&<div style={{fontSize:8,color:current.color,border:"1px solid "+current.color,padding:"1px 5px"}}>MAX</div>}
                 </div>
                 {/* Level bar */}
                 <div style={{display:"flex",gap:3,marginBottom:6}}>
@@ -1730,16 +1721,16 @@ export default function App(){
                     <div key={i} style={{flex:1,height:6,background:i<=lvl?part.levels[Math.min(i,4)].color:"#1a1a1a",borderRadius:1}}/>
                   ))}
                 </div>
-                <div style={{fontSize:5,color:"#888",marginBottom:6,lineHeight:1.6}}>{current.effect}</div>
+                <div style={{fontSize:8,color:"#888",marginBottom:6,lineHeight:1.6}}>{current.effect}</div>
                 {next&&(
                   <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                    <div style={{fontSize:5,color:"#555"}}>
+                    <div style={{fontSize:8,color:"#555"}}>
                       {"NEXT: "+next.name}
                     </div>
                     <div style={{display:"flex",gap:6,alignItems:"center"}}>
-                      {next.credits>0&&<span style={{fontSize:5,color:credits>=next.credits?"#2dc653":"#e63946"}}>{"C"+next.credits}</span>}
-                      {next.trophies>0&&<span style={{fontSize:5,color:trophies>=next.trophies?"#f4a261":"#e63946"}}>{"T"+next.trophies}</span>}
-                      <button onClick={()=>buyUpgrade(key)} disabled={!affordable} style={{background:affordable?GOLD:"#111",color:affordable?DARK:"#333",border:"none",padding:"4px 10px",fontSize:6,fontFamily:PX,cursor:affordable?"pointer":"default"}}>
+                      {next.credits>0&&<span style={{fontSize:8,color:credits>=next.credits?"#2dc653":"#e63946"}}>{"C"+next.credits}</span>}
+                      {next.trophies>0&&<span style={{fontSize:8,color:trophies>=next.trophies?"#f4a261":"#e63946"}}>{"T"+next.trophies}</span>}
+                      <button onClick={()=>buyUpgrade(key)} disabled={!affordable} style={{background:affordable?GOLD:"#111",color:affordable?DARK:"#333",border:"none",padding:"4px 10px",fontSize:10,fontFamily:PX,cursor:affordable?"pointer":"default"}}>
                         {affordable?"UPGRADE":"..."}
                       </button>
                     </div>
@@ -1753,12 +1744,12 @@ export default function App(){
         {/* Active synergies */}
         {garageActiveSyn.length>0&&(
           <div style={{width:"100%",maxWidth:440,marginBottom:14}}>
-            <div style={{fontSize:6,color:"#555",letterSpacing:3,marginBottom:8}}>-- SYNERGIES ACTIVE --</div>
+            <div style={{fontSize:10,color:"#555",letterSpacing:3,marginBottom:8}}>-- SYNERGIES ACTIVE --</div>
             <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
               {garageActiveSyn.map(s=>(
                 <div key={s.id} style={{border:"1px solid "+GOLD+"44",padding:"4px 8px",background:"#0d0d0d"}}>
-                  <div style={{fontSize:6,color:GOLD,marginBottom:2}}>{s.name}</div>
-                  <div style={{fontSize:5,color:"#888"}}>{s.effect}</div>
+                  <div style={{fontSize:10,color:GOLD,marginBottom:2}}>{s.name}</div>
+                  <div style={{fontSize:8,color:"#888"}}>{s.effect}</div>
                 </div>
               ))}
             </div>
@@ -1768,21 +1759,21 @@ export default function App(){
         {/* Casebook — story progress */}
         {seenStory.length>0&&(
           <div style={{width:"100%",maxWidth:440,marginBottom:16}}>
-            <div style={{fontSize:6,color:"#555",letterSpacing:3,marginBottom:8}}>-- CASEBOOK --</div>
+            <div style={{fontSize:10,color:"#555",letterSpacing:3,marginBottom:8}}>-- CASEBOOK --</div>
             <div style={{display:"flex",flexWrap:"wrap",gap:4}}>
               {seenStory.map((sid,i)=>{
                 const m=STORY_MOMENTS.find(x=>x.id===sid);
                 return m?(
                   <div key={i} style={{border:"1px solid "+m.color+"44",padding:"3px 8px",background:"#0d0d0d"}}>
-                    <div style={{fontSize:5,color:m.color,fontFamily:PX}}>{m.title||m.char+" - "+m.id}</div>
+                    <div style={{fontSize:8,color:m.color,fontFamily:PX}}>{m.title||m.char+" - "+m.id}</div>
                   </div>
                 ):null;
               })}
             </div>
             {seenStory.indexOf("g07")>=0&&(
               <div style={{marginTop:10,border:"1px solid #9b5de5",padding:"8px 12px",background:"#0a0010"}}>
-                <div style={{fontSize:6,color:"#9b5de5",fontFamily:PX,marginBottom:4}}>TRUE ENDING UNLOCKED</div>
-                <div style={{fontSize:5,color:"#666"}}>Find Enzo's Prototype to face Hale in The 500.</div>
+                <div style={{fontSize:10,color:"#9b5de5",fontFamily:PX,marginBottom:4}}>TRUE ENDING UNLOCKED</div>
+                <div style={{fontSize:8,color:"#666"}}>Find Enzo's Prototype to face Hale in The 500.</div>
               </div>
             )}
           </div>
@@ -1790,21 +1781,21 @@ export default function App(){
 
         {/* Collection wall */}
         <div style={{width:"100%",maxWidth:440,marginBottom:16}}>
-          <div style={{fontSize:6,color:"#555",letterSpacing:3,marginBottom:8}}>-- GARAGE WALL ({collected.length}/40) --</div>
+          <div style={{fontSize:10,color:"#555",letterSpacing:3,marginBottom:8}}>-- GARAGE WALL ({collected.length}/40) --</div>
           {["MEMORABILIA","ENZO","CONSPIRACY","WEIRD"].map(cat=>{
             const catItems=COLLECTIBLES.filter(c=>c.cat===cat);
             const catFound=catItems.filter(c=>collected.indexOf(c.id)>=0);
             const cc=CAT_COLORS_COLL[cat];
             return(
               <div key={cat} style={{marginBottom:10}}>
-                <div style={{fontSize:5,color:cc,letterSpacing:2,marginBottom:5}}>{cat+" ("+catFound.length+"/"+catItems.length+")"}</div>
+                <div style={{fontSize:8,color:cc,letterSpacing:2,marginBottom:5}}>{cat+" ("+catFound.length+"/"+catItems.length+")"}</div>
                 <div style={{display:"flex",flexWrap:"wrap",gap:4}}>
                   {catItems.map(item=>{
                     const found=collected.indexOf(item.id)>=0;
                     return(
                       <div key={item.id} style={{width:64,background:found?"#0d0d0d":"#080808",border:"1px solid "+(found?cc+"55":"#1a1a1a"),padding:"4px 5px",opacity:found?1:0.3}}>
-                        <div style={{fontSize:4,color:found?cc:"#333",fontFamily:PX,lineHeight:1.6}}>{found?item.name:"???"}</div>
-                        {found&&<div style={{fontSize:4,color:"#666",fontFamily:"Georgia,serif",fontStyle:"italic",lineHeight:1.4,marginTop:2}}>{item.flavor.slice(0,30)+"..."}</div>}
+                        <div style={{fontSize:7,color:found?cc:"#333",fontFamily:PX,lineHeight:1.6}}>{found?item.name:"???"}</div>
+                        {found&&<div style={{fontSize:7,color:"#666",fontFamily:"Georgia,serif",fontStyle:"italic",lineHeight:1.4,marginTop:2}}>{item.flavor.slice(0,30)+"..."}</div>}
                       </div>
                     );
                   })}
@@ -1814,7 +1805,7 @@ export default function App(){
           })}
         </div>
 
-        <button onClick={newSeason} style={{background:RED,color:"#fff",border:"none",padding:"13px 32px",fontSize:9,fontFamily:PX,cursor:"pointer",letterSpacing:2,boxShadow:"4px 4px 0 #8B0000"}}>
+        <button onClick={newSeason} style={{background:RED,color:"#fff",border:"none",padding:"13px 32px",fontSize:14,fontFamily:PX,cursor:"pointer",letterSpacing:2,boxShadow:"4px 4px 0 #8B0000"}}>
           NEXT SEASON
         </button>
       </div>
